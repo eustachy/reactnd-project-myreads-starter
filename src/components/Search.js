@@ -2,8 +2,8 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
-import * as BooksAPI from './BooksAPI'
-import BookList from './BookList'
+import * as BooksAPI from '../BooksAPI'
+import Book from './Book'
 
 class Search extends React.Component {
 
@@ -102,10 +102,16 @@ class Search extends React.Component {
           </div>
         )}
         <div className="search-books-results">
-          <BookList
-            books={result}
-            onShelfChange={this.onShelfChange}
-          />
+          <ol className="books-grid">
+            {result.map((book, id) => (
+              <li key={id}>
+                <Book
+                  book={book}
+                  onShelfChange={this.onShelfChange}
+                />
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
     )
