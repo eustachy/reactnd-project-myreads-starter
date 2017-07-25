@@ -15,7 +15,7 @@ class ListSearchBooks extends React.Component {
 
   state = {
     query: '',
-    searchBooks: []
+    result: []
   };
 
   onShelfChange = (book, shelf) => {
@@ -34,25 +34,31 @@ class ListSearchBooks extends React.Component {
   updateQuery = (query) => {
 
     if ( query ) {
-      BooksAPI.search(query, 20).then(seaarchBooks => {
-        this.setState({
-          query: query.trim(),
-          searchBooks: seaarchBooks.map(newBook => {
+      this.setState({ query: query.trim() });
+      BooksAPI.search(query).then(res => {
+
+        let result = [];
+        if ( Array.isArray(res) ) {
+          result = res.map(newBook => {
             this.props.books.forEach(oldBook => {
               if ( newBook.id === oldBook.id ) {
                 newBook = oldBook;
               }
             });
             return newBook;
-          })
-        })
+          });
+        }
+        this.setState({ result });
       });
+    } else {
+      this.setState({ query: '', result: [] });
     }
   };
 
+
   render() {
 
-    const { query, searchBooks } = this.state;
+    const { query, result } = this.state;
 
     return (
       <div className="search-books">
@@ -81,8 +87,8 @@ class ListSearchBooks extends React.Component {
         </div>
         <div className="search-books-results">
           <ol className="books-grid">
-            {searchBooks.map(book => (
-              <li>
+            {result.map((book, id) => (
+              <li key={id}>
                 <Book
                   book={book}
                   onShelfChange={this.onShelfChange}

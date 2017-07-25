@@ -8,13 +8,9 @@ class Book extends React.Component {
     onShelfChange: PropTypes.func.isRequired
   };
 
-  handleChange = (book, event) => {
-    this.props.onShelfChange(book, event.target.value);
-  };
-
   render() {
 
-    const { book } = this.props;
+    const { book, onShelfChange } = this.props;
 
     return (
       <div className="book">
@@ -22,10 +18,10 @@ class Book extends React.Component {
           <div className="book-cover" style={{
             width: 128,
             height: 193,
-            backgroundImage: `url(${book.imageLinks.thumbnail})`
+            backgroundImage: `url(${book.imageLinks && book.imageLinks.thumbnail})`
           }}></div>
           <div className="book-shelf-changer">
-            <select value={book.shelf} onChange={(e) => this.handleChange(book, e)}>
+            <select value={book.shelf} onChange={(e) => onShelfChange(book, e)}>
               <option value="none" disabled>Move to...</option>
               <option value="currentlyReading">Currently Reading</option>
               <option value="wantToRead">Want to Read</option>
