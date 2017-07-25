@@ -9,6 +9,7 @@ import Book from './Book'
 class ListSearchBooks extends React.Component {
 
   static propTypes = {
+    books: PropTypes.array.isRequired,
     onShelfChange: PropTypes.func.isRequired
   };
 
@@ -17,14 +18,33 @@ class ListSearchBooks extends React.Component {
     searchBooks: []
   };
 
+  onShelfChange = (book, shelf) => {
+    this.setState(state => {
+      return {
+        searchBooks: state.searchBooks.map(b => {
+          if ( b.id === book.id )
+            b['shelf'] = shelf;
+          return b;
+        })
+      };
+    });
+    this.props.onShelfChange(book, shelf);
+  };
+
   updateQuery = (query) => {
+
     if ( query ) {
-      BooksAPI.search(query, 20).then(books => {
-        console.log(books);
-        console.log(query);
+      BooksAPI.search(query, 20).then(seaarchBooks => {
         this.setState({
           query: query.trim(),
-          searchBooks: books.sort(sortBy('title'))
+          searchBooks: seaarchBooks.map(newBook => {
+            this.props.books.forEach(oldBook => {
+              if ( newBook.id === oldBook.id ) {
+                newBook = oldBook;
+              }
+            });
+            return newBook;
+          })
         })
       });
     }
@@ -32,7 +52,6 @@ class ListSearchBooks extends React.Component {
 
   render() {
 
-    const { onShelfChange } = this.props;
     const { query, searchBooks } = this.state;
 
     return (
@@ -66,7 +85,7 @@ class ListSearchBooks extends React.Component {
               <li>
                 <Book
                   book={book}
-                  onShelfChange={onShelfChange}
+                  onShelfChange={this.onShelfChange}
                 />
               </li>
             ))}
