@@ -14,6 +14,7 @@ class Search extends React.Component {
 
   state = {
     query: '',
+    isSearching: false,
     result: []
   };
 
@@ -34,7 +35,7 @@ class Search extends React.Component {
   updateQuery = (query) => {
 
     if ( query ) {
-      this.setState({ query: query.trim() });
+      this.setState({ query: query.trim(), isSearching: true });
 
       BooksAPI.search(query).then(res => {
         let result = [];
@@ -51,7 +52,7 @@ class Search extends React.Component {
             return newBook;
           });
         }
-        this.setState({ result });
+        this.setState({ result, isSearching: false });
       });
     } else {
       this.setState({ query: '', result: [] });
@@ -61,7 +62,7 @@ class Search extends React.Component {
 
   render() {
 
-    const { query, result } = this.state;
+    const { query, result, isSearching } = this.state;
 
     return (
       <div className="search-books">
@@ -88,6 +89,16 @@ class Search extends React.Component {
 
           </div>
         </div>
+        {!result.length && query.length && !isSearching && (
+          <div className="search-alert">
+            <h3>No results! Try again</h3>
+          </div>
+        )}
+        {!result.length && isSearching && (
+          <div className="search-alert">
+            <h3>Searching...</h3>
+          </div>
+        )}
         <div className="search-books-results">
           <BookList
             books={result}

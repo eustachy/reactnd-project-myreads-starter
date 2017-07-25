@@ -84,6 +84,11 @@ body, .app {
   border: none;
   outline: none;
 }
+.search-alert {
+  color: dimgrey;
+  padding-top: 100px;
+  text-align: center;
+}
 
 .close-search {
   display: block;
