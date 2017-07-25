@@ -9,6 +9,7 @@ import Search from './Search'
 class BooksApp extends React.Component {
 
   state = {
+    // keep all books in one array
     books: []
   };
 
@@ -19,6 +20,7 @@ class BooksApp extends React.Component {
   };
 
   shelfChange = (book, shelf) => {
+    // shelf change triggered by a book in BookList component
 
     this.setState(state => {
       // remove a book from the list
@@ -31,7 +33,7 @@ class BooksApp extends React.Component {
         return { books: state.books.concat([book]) };
       }
 
-      // otherwise update a book shelf
+      // otherwise update shelf property of the given book
       return {
         books: state.books.filter(b => {
           return b.id === book.id ? b.shelf = shelf : b

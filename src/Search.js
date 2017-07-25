@@ -39,9 +39,10 @@ class Search extends React.Component {
 
       BooksAPI.search(query).then(res => {
         let result = [];
+        // check if the result from AJAX call is valid
         if ( Array.isArray(res) ) {
           // compare books from search results and MyReads list
-          // to update shelves status of books that are already in MyReads
+          // to update shelf property of books that are already in MyReads list
           result = res.map(newBook => {
             let id = this.props.books.findIndex((b) => {
               return b.id === newBook.id
