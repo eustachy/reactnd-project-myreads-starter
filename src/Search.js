@@ -1,12 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import sortBy from 'sort-by'
 
 import * as BooksAPI from './BooksAPI'
-import Book from './Book'
+import BookList from './BookList'
 
-class ListSearchBooks extends React.Component {
+class Search extends React.Component {
 
   static propTypes = {
     books: PropTypes.array.isRequired,
@@ -19,15 +18,16 @@ class ListSearchBooks extends React.Component {
   };
 
   onShelfChange = (book, shelf) => {
+    // update selected book in the search view
     this.setState(state => {
       return {
-        searchBooks: state.searchBooks.map(b => {
-          if ( b.id === book.id )
-            b['shelf'] = shelf;
-          return b;
+        result: state.result.filter(b => {
+          return b.id === book.id ? b.shelf = shelf : b
         })
       };
     });
+
+    // propagate state changes to the parent
     this.props.onShelfChange(book, shelf);
   };
 
@@ -35,16 +35,19 @@ class ListSearchBooks extends React.Component {
 
     if ( query ) {
       this.setState({ query: query.trim() });
-      BooksAPI.search(query).then(res => {
 
+      BooksAPI.search(query).then(res => {
         let result = [];
         if ( Array.isArray(res) ) {
+          // compare books from search results and MyReads list
+          // to update shelves status of books that are already in MyReads
           result = res.map(newBook => {
-            this.props.books.forEach(oldBook => {
-              if ( newBook.id === oldBook.id ) {
-                newBook = oldBook;
-              }
+            let id = this.props.books.findIndex((b) => {
+              return b.id === newBook.id
             });
+            if ( id >= 0 ) {
+              newBook.shelf = this.props.books[id].shelf;
+            }
             return newBook;
           });
         }
@@ -86,20 +89,14 @@ class ListSearchBooks extends React.Component {
           </div>
         </div>
         <div className="search-books-results">
-          <ol className="books-grid">
-            {result.map((book, id) => (
-              <li key={id}>
-                <Book
-                  book={book}
-                  onShelfChange={this.onShelfChange}
-                />
-              </li>
-            ))}
-          </ol>
+          <BookList
+            books={result}
+            onShelfChange={this.onShelfChange}
+          />
         </div>
       </div>
     )
   }
 }
 
-export default ListSearchBooks
+export default Search

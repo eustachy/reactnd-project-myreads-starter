@@ -3,8 +3,8 @@ import { Route } from 'react-router-dom'
 
 import * as BooksAPI from './BooksAPI'
 import './App.css'
-import ListMyReads from './ListMyReads'
-import ListSearchBooks from './ListSearchBooks'
+import MyReads from './MyReads'
+import Search from './Search'
 
 class BooksApp extends React.Component {
 
@@ -18,25 +18,25 @@ class BooksApp extends React.Component {
     })
   };
 
-  updateBook = (book, shelf) => {
+  shelfChange = (book, shelf) => {
 
     this.setState(state => {
+      // remove a book from the list
       if ( shelf === 'none' )
         return { books: state.books.filter((b) => b.id !== book.id) };
 
+      // add a new book to the list
       if ( book.shelf === 'none' ) {
         book.shelf = shelf;
         return { books: state.books.concat([book]) };
       }
 
-      let books = state.books.map(oldBook => {
-        if ( book.id === oldBook.id ) {
-          oldBook.shelf = shelf;
-        }
-        return oldBook;
-      });
-
-      return { books: books };
+      // otherwise update a book shelf
+      return {
+        books: state.books.filter(b => {
+          return b.id === book.id ? b.shelf = shelf : b
+        })
+      };
     });
 
     BooksAPI.update(book, shelf);
@@ -50,16 +50,16 @@ class BooksApp extends React.Component {
       <div className="app">
 
         <Route exact path="/" render={() => (
-          <ListMyReads
+          <MyReads
             books={books}
-            onShelfChange={this.updateBook}
+            onShelfChange={this.shelfChange}
           />
         )}/>
 
         <Route exact path="/search" render={() => (
-          <ListSearchBooks
+          <Search
             books={books}
-            onShelfChange={this.updateBook}
+            onShelfChange={this.shelfChange}
           />
         )}/>
 

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 
 import BookShelf from './BookShelf'
 
-class ListMyReads extends React.Component {
+class MyReads extends React.Component {
 
   static propTypes = {
     books: PropTypes.array.isRequired,
@@ -38,4 +38,4 @@ class ListMyReads extends React.Component {
   }
 }
 
-export default ListMyReads
+export default MyReads
