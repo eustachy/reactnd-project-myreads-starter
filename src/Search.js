@@ -8,7 +8,7 @@ import BookList from './BookList'
 class Search extends React.Component {
 
   static propTypes = {
-    books: PropTypes.array.isRequired,
+    booksOnShelf: PropTypes.array.isRequired,
     onShelfChange: PropTypes.func.isRequired
   };
 
@@ -44,11 +44,11 @@ class Search extends React.Component {
           // compare books from search results and MyReads list
           // to update shelf property of books that are already in MyReads list
           result = res.map(newBook => {
-            let id = this.props.books.findIndex((b) => {
+            let id = this.props.booksOnShelf.findIndex((b) => {
               return b.id === newBook.id
             });
             if ( id >= 0 ) {
-              newBook.shelf = this.props.books[id].shelf;
+              newBook.shelf = this.props.booksOnShelf[id].shelf;
             }
             return newBook;
           });
